@@ -36,7 +36,7 @@ private:
     myTcpServer *tcpServer;
     QTimer *my_timer;
     QTimer *real_time_timer;
-    QTableWidget *tabe_save_data;
+    QTableWidget *table_save_data;
 
 private:
     void init();
@@ -53,6 +53,11 @@ private slots:
     void ClientReadData(int clientID,QString IP,int Port,QByteArray data);
     void ClientConnect(int clientID,QString IP,int Port);
     void ClientDisConnect(int clientID,QString IP,int Port);
+
+    void deal_recv_data(QByteArray data);
+    void display_posiation_data(QByteArray data);
+
+    void send_mesg(QByteArray msg);
 
     void on_send_clicked();
 
@@ -76,14 +81,21 @@ private slots:
 
     void on_pushButton_clicked();
 
-    void on_tabe_save_data_clicked();
+    void on_table_save_data_clicked();
+
+    void on_button_commit_curdata_db_clicked();
+
+    void on_button_delete_alldata_clicked();
+
+    void on_button_get_curdata_clicked();
+
+    void on_button_commit_clicked();
 
 private:
     Ui::yuntai *ui;
 };
 
 #endif // YUNTAI_H
-
 
 
 

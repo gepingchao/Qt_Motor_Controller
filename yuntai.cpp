@@ -52,33 +52,33 @@ void yuntai::init()
 
 
     my_timer = new QTimer(this);
-    tabe_save_data = new QTableWidget(ui->tabe_space);
-    tabe_save_data->setRowCount(0);
-    tabe_save_data->setColumnCount(4);
-    tabe_save_data->setGeometry(QRect(0,0,350,240));
-    tabe_save_data->setHorizontalHeaderLabels(QStringList() /*<<tr("定位")*/<<tr("水平角度")<<tr("垂直角度")<<tr("时间(ms)")<<tr("方向"));
-    //QHeaderView* headerView = tabe_save_data->verticalHeader();
+    table_save_data = new QTableWidget(ui->tabe_space);
+    table_save_data->setRowCount(0);
+    table_save_data->setColumnCount(4);
+    table_save_data->setGeometry(QRect(0,0,350,310));
+    table_save_data->setHorizontalHeaderLabels(QStringList() /*<<tr("定位")*/<<tr("水平角度")<<tr("垂直角度")<<tr("时间(ms)")<<tr("方向           "));
+    //QHeaderView* headerView = table_save_data->verticalHeader();
     //headerView->setHidden(true);
 
-    //tabe_save_data->setColumnWidth(0,40);
-    tabe_save_data->setColumnWidth(0,80);
-    tabe_save_data->setColumnWidth(1,80);
-    tabe_save_data->setColumnWidth(2,80);
-    tabe_save_data->setColumnWidth(3,80);
-    //tabe_save_data->setDisabled(TRUE);
+    //table_save_data->setColumnWidth(0,40);
+    table_save_data->setColumnWidth(0,90);
+    table_save_data->setColumnWidth(1,90);
+    table_save_data->setColumnWidth(2,85);
+    table_save_data->setColumnWidth(3,85);
+    //table_save_data->setDisabled(TRUE);
 
-    //tabe_save_data->setItem(2,2,new QTableWidgetItem("1234"));
-    //tabe_save_data->setItem(0,1,new QTableWidgetItem("水平角度"));
-    //tabe_save_data->setItem(0,2,new QTableWidgetItem("垂直角度"));
-    //tabe_save_data->setItem(0,3,new QTableWidgetItem("时间"));
+    //table_save_data->setItem(2,2,new QTableWidgetItem("1234"));
+    //table_save_data->setItem(0,1,new QTableWidgetItem("水平角度"));
+    //table_save_data->setItem(0,2,new QTableWidgetItem("垂直角度"));
+    //table_save_data->setItem(0,3,new QTableWidgetItem("时间"));
 
-    tabe_save_data->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tabe_save_data->setSelectionMode(QAbstractItemView::SingleSelection);
-    tabe_save_data->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    table_save_data->setSelectionBehavior(QAbstractItemView::SelectRows);
+    table_save_data->setSelectionMode(QAbstractItemView::SingleSelection);
+    table_save_data->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 
 
-    connect(tabe_save_data,SIGNAL(itemClicked(QTableWidgetItem*)),this,SLOT(on_tabe_save_data_clicked()));
+    connect(table_save_data,SIGNAL(itemClicked(QTableWidgetItem*)),this,SLOT(on_table_save_data_clicked()));
 
 
 
@@ -134,8 +134,23 @@ void yuntai::on_listen_clicked()
 
 void yuntai::on_button_add_line_clicked()
 {
-    tabe_save_data->setRowCount(tabe_save_data->rowCount()+1);
-    tabe_save_data->setItem(tabe_save_data->rowCount()-1,3,new QTableWidgetItem("NULL"));
+    table_save_data->setRowCount(table_save_data->rowCount()+1);
+
+    QString set_time,set_h_angle,set_v_angle;
+    set_h_angle = QString("%1").arg(ui->dial_value->value());
+    set_v_angle = QString("%1").arg(ui->slider_value->value());
+    set_time = QString("%1").arg(ui->time_value->value());
+    table_save_data->setItem(table_save_data->rowCount()-1,0,new QTableWidgetItem(set_h_angle));
+    table_save_data->setItem(table_save_data->rowCount()-1,1,new QTableWidgetItem(set_v_angle));
+    table_save_data->setItem(table_save_data->rowCount()-1,2,new QTableWidgetItem(set_time));
+    if(ui->positive->isChecked())
+    {
+        table_save_data->setItem(table_save_data->rowCount()-1,3,new QTableWidgetItem("正转"));
+    }
+    else
+    {
+        table_save_data->setItem(table_save_data->rowCount()-1,3,new QTableWidgetItem("反转"));
+    }
 }
 
 void yuntai::on_button_lock_line_clicked()
@@ -143,7 +158,7 @@ void yuntai::on_button_lock_line_clicked()
     if(ui->button_lock_line->text()=="锁定")
         {
         ui->button_lock_line->setText("解锁");
-        tabe_save_data->setDisabled(true);
+        table_save_data->setDisabled(true);
         ui->button_add_line->setDisabled(true);
         ui->button_dele_line->setDisabled(true);
         ui->button_add_item->setDisabled(true);
@@ -151,7 +166,7 @@ void yuntai::on_button_lock_line_clicked()
     else
         {
         ui->button_lock_line->setText("锁定");
-        tabe_save_data->setDisabled(false);
+        table_save_data->setDisabled(false);
         ui->button_add_line->setDisabled(false);
         ui->button_dele_line->setDisabled(false);
         ui->button_add_item->setDisabled(false);
@@ -161,7 +176,7 @@ void yuntai::on_button_lock_line_clicked()
 
 void yuntai::on_button_dele_line_clicked()
 {
-    tabe_save_data->removeRow(tabe_save_data->currentRow());
+    table_save_data->removeRow(table_save_data->currentRow());
 }
 
 void yuntai::on_button_add_item_clicked()
@@ -170,19 +185,19 @@ void yuntai::on_button_add_item_clicked()
     set_h_angle = QString("%1").arg(ui->dial_value->value());
     set_v_angle = QString("%1").arg(ui->slider_value->value());
     set_time = QString("%1").arg(ui->time_value->value());
-    tabe_save_data->setItem(tabe_save_data->currentRow(),0,new QTableWidgetItem(set_h_angle));
-    tabe_save_data->setItem(tabe_save_data->currentRow(),1,new QTableWidgetItem(set_v_angle));
-    tabe_save_data->setItem(tabe_save_data->currentRow(),2,new QTableWidgetItem(set_time));
+    table_save_data->setItem(table_save_data->currentRow(),0,new QTableWidgetItem(set_h_angle));
+    table_save_data->setItem(table_save_data->currentRow(),1,new QTableWidgetItem(set_v_angle));
+    table_save_data->setItem(table_save_data->currentRow(),2,new QTableWidgetItem(set_time));
     if(ui->positive->isChecked())
     {
-        tabe_save_data->setItem(tabe_save_data->currentRow(),3,new QTableWidgetItem("正转"));
+        table_save_data->setItem(table_save_data->currentRow(),3,new QTableWidgetItem("正转"));
     }
     else
     {
-        tabe_save_data->setItem(tabe_save_data->currentRow(),3,new QTableWidgetItem("反转"));
+        table_save_data->setItem(table_save_data->currentRow(),3,new QTableWidgetItem("反转"));
     }
 
-    //tabe_save_data->item(2,3)->values.
+    //table_save_data->item(2,3)->values.
 
 }
 
@@ -214,6 +229,7 @@ void yuntai::ClientReadData(int clientID, QString IP, int Port, QByteArray data)
 {
     if(!data.isEmpty())
     {
+        deal_recv_data(data);
         if(ui->hex_rx->isChecked())
         {
             //QString target_device = ui->device->currentText();
@@ -259,6 +275,18 @@ void yuntai::on_reset_clicked()
     QByteArray mesg;
     mesg = myprotocol.motor_reset(0XFF);
     tcpServer->SendData(clientID,mesg);
+}
+
+void yuntai::send_mesg(QByteArray msg)
+{
+    QString target = ui->client->currentText();
+    int clientID = target.split(":")[0].toInt();
+    if(0 == clientID)
+    {
+        return;
+    }
+
+    tcpServer->SendData(clientID,msg);
 }
 
 void yuntai::on_send_clicked()
@@ -318,18 +346,18 @@ void yuntai::on_pushButton_clicked()
     tcpServer->SendData(clientID,mesg);
 }
 
-void yuntai::on_tabe_save_data_clicked()
+void yuntai::on_table_save_data_clicked()
 {
-    if(tabe_save_data->item(tabe_save_data->currentRow(),3)->text()== "NULL")
+    if(table_save_data->item(table_save_data->currentRow(),3)->text()== "NULL")
     {
         return;
     }
     else
     {
-        ui->horizontal_angle->setValue(tabe_save_data->item(tabe_save_data->currentRow(),0)->text().toInt());
-        ui->vertical_angle->setValue(tabe_save_data->item(tabe_save_data->currentRow(),1)->text().toInt());
-        ui->time_value->setValue(tabe_save_data->item(tabe_save_data->currentRow(),2)->text().toInt());
-        if(tabe_save_data->item(tabe_save_data->currentRow(),3)->text()== "正转")
+        ui->horizontal_angle->setValue(table_save_data->item(table_save_data->currentRow(),0)->text().toInt());
+        ui->vertical_angle->setValue(table_save_data->item(table_save_data->currentRow(),1)->text().toInt());
+        ui->time_value->setValue(table_save_data->item(table_save_data->currentRow(),2)->text().toInt());
+        if(table_save_data->item(table_save_data->currentRow(),3)->text()== "正转")
         {
             ui->positive->setChecked(true);
         }
@@ -339,5 +367,117 @@ void yuntai::on_tabe_save_data_clicked()
         }
     }
 
+}
+
+
+void yuntai::on_button_commit_curdata_db_clicked()
+{
+    QByteArray msg;
+    int int_h_angle,int_v_angle,int_time,int_direction,int_row;
+    if(table_save_data->rowCount() == 0)
+    {
+        return;
+    }
+    if(table_save_data->item(table_save_data->currentRow(),3)->text()== "NULL")
+    {
+        return;
+    }
+    else
+    {
+        int_h_angle = table_save_data->item(table_save_data->currentRow(),0)->text().toInt();
+        int_v_angle = table_save_data->item(table_save_data->currentRow(),1)->text().toInt();
+        int_time = table_save_data->item(table_save_data->currentRow(),2)->text().toInt();
+        if(table_save_data->item(table_save_data->currentRow(),3)->text()== "正转")
+            {int_direction = 1;}
+        if(table_save_data->item(table_save_data->currentRow(),3)->text()== "反转")
+            {int_direction = 0;}
+        int_row = table_save_data->currentRow();
+        msg = myprotocol.download_posiztion_data(0XFF,int_h_angle,int_v_angle,int_time,int_direction,int_row);
+        send_mesg(msg);
+    }
+
+}
+
+
+
+
+void yuntai::on_button_delete_alldata_clicked()
+{
+    QByteArray msg;
+    msg = myprotocol.delete_all_posiation_data(0XFF);
+    send_mesg(msg);
+}
+
+
+void yuntai::on_button_get_curdata_clicked()
+{
+    if(table_save_data->rowCount() < 0)
+    {
+        return;
+    }
+    if(table_save_data->item(table_save_data->currentRow(),3)->text()== "NULL")
+    {
+        return;
+    }
+    QByteArray msg;
+    if(table_save_data->currentRow())
+    {
+        msg = myprotocol.polling_one_posiztion_data(0XFF,table_save_data->currentRow());
+        send_mesg(msg);
+    }
+
+}
+
+
+void yuntai::on_button_commit_clicked()
+{
+    QByteArray msg;
+    msg = myprotocol.commit_data_to_flash(0XFF);
+    send_mesg(msg);
+}
+
+
+void yuntai::display_posiation_data(QByteArray data)
+{
+    unsigned int int_h_angle,int_v_angle,int_time;
+    QString set_time,set_h_angle,set_v_angle;
+    if(data[3] != 22)
+    {
+        return;
+    }
+    int_h_angle = data.at(5)*0X1000000 +(data.at(6))*0X10000 +(data.at(7))*0X100 +(unsigned char)(data.at(8));
+    int_v_angle = data.at(9)*0X1000000 +(data.at(10))*0X10000 +(data.at(11))*0X100 +(unsigned char)(data.at(12));
+    int_time = data.at(13)*0X1000000 +(data.at(14))*0X10000 +(data.at(15))*0X100 +(unsigned char)(data.at(16));
+
+    set_h_angle=QString("%1").arg(int_h_angle);
+    set_v_angle=QString("%1").arg(int_v_angle);
+    set_time=QString("%1").arg(int_time);
+
+    table_save_data->setItem(table_save_data->currentRow(),0,new QTableWidgetItem(set_h_angle));
+    table_save_data->setItem(table_save_data->currentRow(),1,new QTableWidgetItem(set_v_angle));
+    table_save_data->setItem(table_save_data->currentRow(),2,new QTableWidgetItem(set_time));
+    if(data[17] == 0X1)
+    {
+        table_save_data->setItem(table_save_data->currentRow(),3,new QTableWidgetItem("正转"));
+    }
+    if(data[17] == 0X00)
+    {
+        table_save_data->setItem(table_save_data->currentRow(),3,new QTableWidgetItem("反转"));
+    }
+}
+
+void yuntai::deal_recv_data(QByteArray data)
+{
+    char cmd;
+    cmd = data[4];
+    switch(cmd)
+    {
+        case 37:
+        display_posiation_data(data);
+        break;
+
+        default:
+        break;
+    }
 }
 
