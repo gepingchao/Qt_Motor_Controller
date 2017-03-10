@@ -54,17 +54,18 @@ void yuntai::init()
     my_timer = new QTimer(this);
     table_save_data = new QTableWidget(ui->tabe_space);
     table_save_data->setRowCount(0);
-    table_save_data->setColumnCount(4);
-    table_save_data->setGeometry(QRect(0,0,350,310));
-    table_save_data->setHorizontalHeaderLabels(QStringList() /*<<tr("定位")*/<<tr("水平角度")<<tr("垂直角度")<<tr("时间(ms)")<<tr("方向           "));
+    table_save_data->setColumnCount(5);
+    table_save_data->setGeometry(QRect(0,0,430,310));
+    table_save_data->setHorizontalHeaderLabels(QStringList() /*<<tr("定位")*/<<tr("水平角度")<<tr("垂直角度")<<tr("时间(ms)")<<tr("方向")<<tr("速度"));
     //QHeaderView* headerView = table_save_data->verticalHeader();
     //headerView->setHidden(true);
 
     //table_save_data->setColumnWidth(0,40);
-    table_save_data->setColumnWidth(0,90);
-    table_save_data->setColumnWidth(1,90);
+    table_save_data->setColumnWidth(0,85);
+    table_save_data->setColumnWidth(1,85);
     table_save_data->setColumnWidth(2,85);
-    table_save_data->setColumnWidth(3,85);
+    table_save_data->setColumnWidth(3,70);
+    table_save_data->setColumnWidth(4,60);
     //table_save_data->setDisabled(TRUE);
 
     //table_save_data->setItem(2,2,new QTableWidgetItem("1234"));
@@ -78,7 +79,7 @@ void yuntai::init()
 
 
 
-    connect(table_save_data,SIGNAL(itemClicked(QTableWidgetItem*)),this,SLOT(on_table_save_data_clicked()));
+    connect(table_save_data,SIGNAL(itemDoubleClicked(QTableWidgetItem*)),this,SLOT(on_table_save_data_clicked()));
 
 
 
@@ -136,13 +137,15 @@ void yuntai::on_button_add_line_clicked()
 {
     table_save_data->setRowCount(table_save_data->rowCount()+1);
 
-    QString set_time,set_h_angle,set_v_angle;
+    QString set_time,set_h_angle,set_v_angle,set_speed;
     set_h_angle = QString("%1").arg(ui->dial_value->value());
     set_v_angle = QString("%1").arg(ui->slider_value->value());
     set_time = QString("%1").arg(ui->time_value->value());
+    set_speed = QString("%1").arg(ui->motor_speed_value->value());
     table_save_data->setItem(table_save_data->rowCount()-1,0,new QTableWidgetItem(set_h_angle));
     table_save_data->setItem(table_save_data->rowCount()-1,1,new QTableWidgetItem(set_v_angle));
     table_save_data->setItem(table_save_data->rowCount()-1,2,new QTableWidgetItem(set_time));
+    table_save_data->setItem(table_save_data->rowCount()-1,4,new QTableWidgetItem(set_speed));
     if(ui->positive->isChecked())
     {
         table_save_data->setItem(table_save_data->rowCount()-1,3,new QTableWidgetItem("正转"));
@@ -181,13 +184,15 @@ void yuntai::on_button_dele_line_clicked()
 
 void yuntai::on_button_add_item_clicked()
 {
-    QString set_time,set_h_angle,set_v_angle;
+    QString set_time,set_h_angle,set_v_angle,set_speed;
     set_h_angle = QString("%1").arg(ui->dial_value->value());
     set_v_angle = QString("%1").arg(ui->slider_value->value());
     set_time = QString("%1").arg(ui->time_value->value());
+    set_speed = QString("%1").arg(ui->motor_speed_value->value());
     table_save_data->setItem(table_save_data->currentRow(),0,new QTableWidgetItem(set_h_angle));
     table_save_data->setItem(table_save_data->currentRow(),1,new QTableWidgetItem(set_v_angle));
     table_save_data->setItem(table_save_data->currentRow(),2,new QTableWidgetItem(set_time));
+    table_save_data->setItem(table_save_data->currentRow(),4,new QTableWidgetItem(set_speed));
     if(ui->positive->isChecked())
     {
         table_save_data->setItem(table_save_data->currentRow(),3,new QTableWidgetItem("正转"));
@@ -378,10 +383,6 @@ void yuntai::on_button_commit_curdata_db_clicked()
     {
         return;
     }
-    if(table_save_data->item(table_save_data->currentRow(),3)->text()== "NULL")
-    {
-        return;
-    }
     else
     {
         int_h_angle = table_save_data->item(table_save_data->currentRow(),0)->text().toInt();
@@ -411,21 +412,13 @@ void yuntai::on_button_delete_alldata_clicked()
 
 void yuntai::on_button_get_curdata_clicked()
 {
-    if(table_save_data->rowCount() < 0)
-    {
-        return;
-    }
-    if(table_save_data->item(table_save_data->currentRow(),3)->text()== "NULL")
+    if(table_save_data->rowCount() == 0)
     {
         return;
     }
     QByteArray msg;
-    if(table_save_data->currentRow())
-    {
-        msg = myprotocol.polling_one_posiztion_data(0XFF,table_save_data->currentRow());
-        send_mesg(msg);
-    }
-
+    msg = myprotocol.polling_one_posiztion_data(0XFF,table_save_data->currentRow());
+    send_mesg(msg);
 }
 
 
