@@ -91,6 +91,10 @@ private slots:
 
     void on_button_commit_clicked();
 
+    void on_dial_value_valueChanged(int arg1);
+
+    void on_slider_value_valueChanged(int arg1);
+
 private:
     Ui::yuntai *ui;
 };

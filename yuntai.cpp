@@ -18,29 +18,12 @@ protocol myprotocol;
 
 void yuntai::on_horizontal_angle_sliderReleased()
 {
-    QString target = ui->client->currentText();
-    int clientID = target.split(":")[0].toInt();
-    if(0 == clientID)
-    {
-        return;
-    }
-    QByteArray mesg;
-    mesg = myprotocol.motor1_goto_posiation(0XFF,ui->horizontal_angle->value());
-    tcpServer->SendData(clientID,mesg);
+
 }
 
 
 void yuntai::on_vertical_angle_sliderReleased()
 {
-    QString target = ui->client->currentText();
-    int clientID = target.split(":")[0].toInt();
-    if(0 == clientID)
-    {
-        return;
-    }
-    QByteArray mesg;
-    mesg = myprotocol.motor2_goto_posiation(0XFF,ui->vertical_angle->value());
-    tcpServer->SendData(clientID,mesg);
 }
 
 
@@ -472,5 +455,32 @@ void yuntai::deal_recv_data(QByteArray data)
         default:
         break;
     }
+}
+
+
+void yuntai::on_dial_value_valueChanged(int arg1)
+{
+    QString target = ui->client->currentText();
+    int clientID = target.split(":")[0].toInt();
+    if(0 == clientID)
+    {
+        return;
+    }
+    QByteArray mesg;
+    mesg = myprotocol.motor1_goto_posiation(0XFF,ui->horizontal_angle->value());
+    tcpServer->SendData(clientID,mesg);
+}
+
+void yuntai::on_slider_value_valueChanged(int arg1)
+{
+     QString target = ui->client->currentText();
+     int clientID = target.split(":")[0].toInt();
+     if(0 == clientID)
+     {
+         return;
+     }
+     QByteArray mesg;
+     mesg = myprotocol.motor2_goto_posiation(0XFF,ui->vertical_angle->value());
+     tcpServer->SendData(clientID,mesg);
 }
 
