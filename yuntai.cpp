@@ -38,17 +38,17 @@ void yuntai::init()
     table_save_data = new QTableWidget(ui->tabe_space);
     table_save_data->setRowCount(0);
     table_save_data->setColumnCount(5);
-    table_save_data->setGeometry(QRect(0,0,430,310));
-    table_save_data->setHorizontalHeaderLabels(QStringList() /*<<tr("定位")*/<<tr("水平角度")<<tr("垂直角度")<<tr("时间(ms)")<<tr("方向")<<tr("速度"));
+    table_save_data->setGeometry(QRect(0,0,435,310));
+    table_save_data->setHorizontalHeaderLabels(QStringList() /*<<tr("定位")*/<<tr("水平角度")<<tr("垂直角度")<<tr("启动时间(ms)")<<tr("方向")<<tr("转动时间(ms)"));
     //QHeaderView* headerView = table_save_data->verticalHeader();
     //headerView->setHidden(true);
 
     //table_save_data->setColumnWidth(0,40);
-    table_save_data->setColumnWidth(0,85);
-    table_save_data->setColumnWidth(1,85);
+    table_save_data->setColumnWidth(0,80);
+    table_save_data->setColumnWidth(1,80);
     table_save_data->setColumnWidth(2,85);
-    table_save_data->setColumnWidth(3,70);
-    table_save_data->setColumnWidth(4,60);
+    table_save_data->setColumnWidth(3,65);
+    table_save_data->setColumnWidth(4,85);
     //table_save_data->setDisabled(TRUE);
 
     //table_save_data->setItem(2,2,new QTableWidgetItem("1234"));
@@ -120,15 +120,15 @@ void yuntai::on_button_add_line_clicked()
 {
     table_save_data->setRowCount(table_save_data->rowCount()+1);
 
-    QString set_time,set_h_angle,set_v_angle,set_speed;
+    QString set_start_time,set_h_angle,set_v_angle,set_runing_time;
     set_h_angle = QString("%1").arg(ui->dial_value->value());
     set_v_angle = QString("%1").arg(ui->slider_value->value());
-    set_time = QString("%1").arg(ui->time_value->value());
-    set_speed = QString("%1").arg(ui->motor_speed_value->value());
+    set_start_time = QString("%1").arg(ui->start_time_value->value());
+    set_runing_time = QString("%1").arg(ui->runing_time_value->value());
     table_save_data->setItem(table_save_data->rowCount()-1,0,new QTableWidgetItem(set_h_angle));
     table_save_data->setItem(table_save_data->rowCount()-1,1,new QTableWidgetItem(set_v_angle));
-    table_save_data->setItem(table_save_data->rowCount()-1,2,new QTableWidgetItem(set_time));
-    table_save_data->setItem(table_save_data->rowCount()-1,4,new QTableWidgetItem(set_speed));
+    table_save_data->setItem(table_save_data->rowCount()-1,2,new QTableWidgetItem(set_start_time));
+    table_save_data->setItem(table_save_data->rowCount()-1,4,new QTableWidgetItem(set_runing_time));
     if(ui->positive->isChecked())
     {
         table_save_data->setItem(table_save_data->rowCount()-1,3,new QTableWidgetItem("正转"));
@@ -148,6 +148,7 @@ void yuntai::on_button_lock_line_clicked()
         ui->button_add_line->setDisabled(true);
         ui->button_dele_line->setDisabled(true);
         ui->button_add_item->setDisabled(true);
+        ui->button_jump->setDisabled(true);
         }
     else
         {
@@ -156,6 +157,7 @@ void yuntai::on_button_lock_line_clicked()
         ui->button_add_line->setDisabled(false);
         ui->button_dele_line->setDisabled(false);
         ui->button_add_item->setDisabled(false);
+        ui->button_jump->setDisabled(false);
         }
 }
 
@@ -167,15 +169,15 @@ void yuntai::on_button_dele_line_clicked()
 
 void yuntai::on_button_add_item_clicked()
 {
-    QString set_time,set_h_angle,set_v_angle,set_speed;
+    QString set_start_time,set_h_angle,set_v_angle,set_runing_time;
     set_h_angle = QString("%1").arg(ui->dial_value->value());
     set_v_angle = QString("%1").arg(ui->slider_value->value());
-    set_time = QString("%1").arg(ui->time_value->value());
-    set_speed = QString("%1").arg(ui->motor_speed_value->value());
+    set_start_time = QString("%1").arg(ui->start_time_value->value());
+    set_runing_time = QString("%1").arg(ui->runing_time_value->value());
     table_save_data->setItem(table_save_data->currentRow(),0,new QTableWidgetItem(set_h_angle));
     table_save_data->setItem(table_save_data->currentRow(),1,new QTableWidgetItem(set_v_angle));
-    table_save_data->setItem(table_save_data->currentRow(),2,new QTableWidgetItem(set_time));
-    table_save_data->setItem(table_save_data->currentRow(),4,new QTableWidgetItem(set_speed));
+    table_save_data->setItem(table_save_data->currentRow(),2,new QTableWidgetItem(set_start_time));
+    table_save_data->setItem(table_save_data->currentRow(),4,new QTableWidgetItem(set_runing_time));
     if(ui->positive->isChecked())
     {
         table_save_data->setItem(table_save_data->currentRow(),3,new QTableWidgetItem("正转"));
@@ -344,7 +346,8 @@ void yuntai::on_table_save_data_clicked()
     {
         ui->horizontal_angle->setValue(table_save_data->item(table_save_data->currentRow(),0)->text().toInt());
         ui->vertical_angle->setValue(table_save_data->item(table_save_data->currentRow(),1)->text().toInt());
-        ui->time_value->setValue(table_save_data->item(table_save_data->currentRow(),2)->text().toInt());
+        ui->start_time_value->setValue(table_save_data->item(table_save_data->currentRow(),2)->text().toInt());
+        ui->runing_time_value->setValue(table_save_data->item(table_save_data->currentRow(),4)->text().toInt());
         if(table_save_data->item(table_save_data->currentRow(),3)->text()== "正转")
         {
             ui->positive->setChecked(true);
@@ -361,7 +364,7 @@ void yuntai::on_table_save_data_clicked()
 void yuntai::on_button_commit_curdata_db_clicked()
 {
     QByteArray msg;
-    int int_h_angle,int_v_angle,int_time,int_direction,int_row;
+    int int_h_angle,int_v_angle,int_start_time,int_direction,int_runing_time,int_row;
     if(table_save_data->rowCount() == 0)
     {
         return;
@@ -370,13 +373,14 @@ void yuntai::on_button_commit_curdata_db_clicked()
     {
         int_h_angle = table_save_data->item(table_save_data->currentRow(),0)->text().toInt();
         int_v_angle = table_save_data->item(table_save_data->currentRow(),1)->text().toInt();
-        int_time = table_save_data->item(table_save_data->currentRow(),2)->text().toInt();
+        int_start_time = table_save_data->item(table_save_data->currentRow(),2)->text().toInt();
         if(table_save_data->item(table_save_data->currentRow(),3)->text()== "正转")
             {int_direction = 1;}
         if(table_save_data->item(table_save_data->currentRow(),3)->text()== "反转")
             {int_direction = 0;}
+        int_runing_time = table_save_data->item(table_save_data->currentRow(),4)->text().toInt();
         int_row = table_save_data->currentRow();
-        msg = myprotocol.download_posiztion_data(0XFF,int_h_angle,int_v_angle,int_time,int_direction,int_row);
+        msg = myprotocol.download_posiztion_data(0XFF,int_h_angle,int_v_angle,int_start_time,int_direction,int_runing_time,int_row);
         send_mesg(msg);
     }
 
@@ -415,23 +419,26 @@ void yuntai::on_button_commit_clicked()
 
 void yuntai::display_posiation_data(QByteArray data)
 {
-    unsigned int int_h_angle,int_v_angle,int_time;
-    QString set_time,set_h_angle,set_v_angle;
-    if(data[3] != 22)
+    unsigned int int_h_angle,int_v_angle,int_time,int_speed;
+    QString set_time,set_h_angle,set_v_angle,set_speed;
+    if(data[3] != 27)
     {
         return;
     }
     int_h_angle = data.at(5)*0X1000000 +(data.at(6))*0X10000 +(data.at(7))*0X100 +(unsigned char)(data.at(8));
     int_v_angle = data.at(9)*0X1000000 +(data.at(10))*0X10000 +(data.at(11))*0X100 +(unsigned char)(data.at(12));
     int_time = data.at(13)*0X1000000 +(data.at(14))*0X10000 +(data.at(15))*0X100 +(unsigned char)(data.at(16));
+    int_speed = data.at(18)*0X1000000 +(data.at(19))*0X10000 +(data.at(20))*0X100 +(unsigned char)(data.at(21));
 
     set_h_angle=QString("%1").arg(int_h_angle);
     set_v_angle=QString("%1").arg(int_v_angle);
     set_time=QString("%1").arg(int_time);
+    set_speed = QString("%1").arg(int_speed);
 
     table_save_data->setItem(table_save_data->currentRow(),0,new QTableWidgetItem(set_h_angle));
     table_save_data->setItem(table_save_data->currentRow(),1,new QTableWidgetItem(set_v_angle));
     table_save_data->setItem(table_save_data->currentRow(),2,new QTableWidgetItem(set_time));
+    table_save_data->setItem(table_save_data->currentRow(),4,new QTableWidgetItem(set_speed));
     if(data[17] == 0X1)
     {
         table_save_data->setItem(table_save_data->currentRow(),3,new QTableWidgetItem("正转"));
@@ -460,27 +467,29 @@ void yuntai::deal_recv_data(QByteArray data)
 
 void yuntai::on_dial_value_valueChanged(int arg1)
 {
-    QString target = ui->client->currentText();
-    int clientID = target.split(":")[0].toInt();
-    if(0 == clientID)
-    {
-        return;
-    }
     QByteArray mesg;
     mesg = myprotocol.motor1_goto_posiation(0XFF,ui->horizontal_angle->value());
-    tcpServer->SendData(clientID,mesg);
+    send_mesg(mesg);
 }
 
 void yuntai::on_slider_value_valueChanged(int arg1)
 {
-     QString target = ui->client->currentText();
-     int clientID = target.split(":")[0].toInt();
-     if(0 == clientID)
-     {
-         return;
-     }
      QByteArray mesg;
      mesg = myprotocol.motor2_goto_posiation(0XFF,ui->vertical_angle->value());
-     tcpServer->SendData(clientID,mesg);
+     send_mesg(mesg);
 }
 
+
+void yuntai::on_button_jump_clicked()
+{
+    QByteArray mesg;
+    mesg = myprotocol.jump_to_point(0XFF,table_save_data->currentRow());
+    send_mesg(mesg);
+}
+
+void yuntai::on_test_Button_2_clicked()
+{
+    QByteArray mesg;
+    mesg = myprotocol.test_motor_operat_intime(0XFF,ui->test_paratemer_time->text().toInt(),ui->test_paratemer_x_angle->text().toInt(),ui->test_paratemer_y_angle->text().toInt());
+    send_mesg(mesg);
+}

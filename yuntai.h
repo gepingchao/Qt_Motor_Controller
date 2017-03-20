@@ -95,11 +95,16 @@ private slots:
 
     void on_slider_value_valueChanged(int arg1);
 
+    void on_button_jump_clicked();
+
+    void on_test_Button_2_clicked();
+
 private:
     Ui::yuntai *ui;
 };
 
 #endif // YUNTAI_H
+
 
 
 
