@@ -23,7 +23,7 @@
       <item>
        <widget class="QTabWidget" name="test_send">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_3">
          <attribute name="title">
@@ -630,7 +630,7 @@
            <string>复位</string>
           </property>
          </widget>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>680</x>
@@ -870,7 +870,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>700</x>
